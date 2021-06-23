@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body {
+        background-color: #ffffff;
+        margin: 0;
+        overflow: hidden;
+        }
+    </style>
+    <script src="./three.js-dev/build/three.js"></script>
+    <script src="./js/STLLoader.js"></script>
+  </head>
+  <body>
+    <script>
+    //宣告全域變數
+    var scene, camera, renderer;
+    var geometry, material, mesh;
+    var geometry2,material2,mesh2;
+    init(); //呼叫起始設定函數
+    animate(); //呼叫動畫函數
+    //定義起始設定函數
+    function init() {
+      //1.建立場景
+      scene=new THREE.Scene();
+      //2.建立曲面圖形物件
+      /*
+      geometry=new THREE.BoxGeometry(300, 300, 300); //建立幾何形狀
+      material=new THREE.MeshBasicMaterial({  //建立材質
+        color: 0xff0000,
+        wireframe: true});
+      mesh=new THREE.Mesh(geometry, material); //以幾何形狀與材質建立曲面
+      scene.add(mesh);*/  //曲面圖形物件加入場景中
+	  /*geometry2=new THREE.BoxGeometry(300, 300, 300); //建立幾何形狀
+      material2=new THREE.MeshBasicMaterial({  //建立材質
+        color: 0x00ff00,
+        wireframe: true});
+      mesh2=new THREE.Mesh(geometry2, material2); //以幾何形狀與材質建立曲面
+      mesh2.scale.set( 2, 2, 2 );
+      scene.add(mesh2);*/
+	  
+      var loader = new THREE.STLLoader();
+      loader.load( 'untitled.stl', function ( geo ) {
+    	material2 = new THREE.MeshNormalMaterial();
+    	mesh2 = new THREE.Mesh( geo, material2 );
+    	mesh2.position.set(-100,100,0);
+    	mesh2.scale.set( 10, 10, 10 );
+    	mesh2.rotation.x += 1.5;
+    	scene.add( mesh2 );
+		} );
+      //3.建立相機
+      camera=new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 10000);
+      camera.position.z=1000;
+      //4.建立繪圖器
+      renderer=new THREE.WebGLRenderer({antialias:true});  //建立 WebGL 繪圖器
+      renderer.setClearColor("#ffffff");  //設定背景色為白色
+      renderer.setSize(window.innerWidth, window.innerHeight); //設定畫布為瀏覽器大小
+      document.body.appendChild(renderer.domElement); //將畫布加入瀏覽器 DOM 中
+      }
+    //定義動畫函數
+    function animate() {
+      requestAnimationFrame(animate);
+      /*mesh.rotation.x += 0.01;
+      mesh.rotation.y += 0.02;*/
+      mesh2.rotation.z += 0.02;
+      renderer.render(scene, camera);
+      }
+    </script>
+  </body>
+</html>
