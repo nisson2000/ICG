@@ -9,6 +9,9 @@
         overflow: hidden;
         }
     </style>
+    <link rel="stylesheet" href="./ICG-HW1-master/style.css">
+    <script type="text/javascript" src="./ICG-HW1-master/utils.js"></script>
+    <script type="text/javascript" src="./ICG-HW1-master/index.js" defer></script>
     <script src="./three.js-dev/build/three.js"></script>
     <script src="./js/STLLoader.js"></script>
   </head>
@@ -18,6 +21,7 @@
     var scene, camera, renderer;
     var geometry, material, mesh;
     var geometry2,material2,mesh2;
+    var geometry3,material3,mesh3;
     init(); //呼叫起始設定函數
     animate(); //呼叫動畫函數
     //定義起始設定函數
@@ -25,13 +29,15 @@
       //1.建立場景
       scene=new THREE.Scene();
       //2.建立曲面圖形物件
-      /*
-      geometry=new THREE.BoxGeometry(300, 300, 300); //建立幾何形狀
+      
+      /*geometry=new THREE.BoxGeometry(100, 100, 100); //建立幾何形狀
       material=new THREE.MeshBasicMaterial({  //建立材質
         color: 0xff0000,
         wireframe: true});
       mesh=new THREE.Mesh(geometry, material); //以幾何形狀與材質建立曲面
-      scene.add(mesh);*/  //曲面圖形物件加入場景中
+      mesh.position.set(0,0,0);
+      scene.add(mesh);  //曲面圖形物件加入場景中
+
 	  /*geometry2=new THREE.BoxGeometry(300, 300, 300); //建立幾何形狀
       material2=new THREE.MeshBasicMaterial({  //建立材質
         color: 0x00ff00,
@@ -41,21 +47,34 @@
       scene.add(mesh2);*/
 	  
       var loader = new THREE.STLLoader();
-      loader.load( 'untitled.stl', function ( geo ) {
+      loader.load( 'untitledb.stl', function ( geo ) {
     	material2 = new THREE.MeshNormalMaterial();
     	mesh2 = new THREE.Mesh( geo, material2 );
-    	mesh2.position.set(-100,100,0);
+    	geo.translate(-38,-40,0);
+    	mesh2.position.set(-700,0,0);
     	mesh2.scale.set( 10, 10, 10 );
     	mesh2.rotation.x += 1.5;
     	scene.add( mesh2 );
 		} );
+      loader.load( 'untitled.stl', function ( geo ) {
+    	material3 = new THREE.MeshNormalMaterial();
+    	mesh3 = new THREE.Mesh( geo, material3 );
+    	geo.translate(-23,-30,0);
+    	mesh3.position.set(500,0,0);
+    	mesh3.scale.set( 10, 10, 10 );
+    	mesh3.rotation.x += 1.5;
+    	scene.add( mesh3 );
+		} );
+
+      
+
       //3.建立相機
       camera=new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1, 10000);
       camera.position.z=1000;
       //4.建立繪圖器
       renderer=new THREE.WebGLRenderer({antialias:true});  //建立 WebGL 繪圖器
-      renderer.setClearColor("#ffffff");  //設定背景色為白色
-      renderer.setSize(window.innerWidth, window.innerHeight); //設定畫布為瀏覽器大小
+      renderer.setClearColor("#000000");  //設定背景色為白色
+      renderer.setSize(1270, 320); //設定畫布為瀏覽器大小
       document.body.appendChild(renderer.domElement); //將畫布加入瀏覽器 DOM 中
       }
     //定義動畫函數
@@ -64,8 +83,646 @@
       /*mesh.rotation.x += 0.01;
       mesh.rotation.y += 0.02;*/
       mesh2.rotation.z += 0.02;
+      mesh3.rotation.z += 0.02;
       renderer.render(scene, camera);
       }
     </script>
+    <div id="panel-box">
+        <div class="tabs">
+            <button class="tab" id="tab-0" onclick="getTab(0)">Item1</button>
+            <button class="tab" id="tab-1" onclick="getTab(1)">Item2</button>
+            <button class="tab" id="tab-2" onclick="getTab(2)">Item3</button>
+            <button class="tab" id="tab-3" onclick="getTab(3)">Light1</button>
+            <button class="tab" id="tab-4" onclick="getTab(4)">Light2</button>
+            <button class="tab" id="tab-5" onclick="getTab(5)">Light3</button>
+            <button class="tab" id="tab-6" onclick="getTab(6)">Feature</button>
+            <button class="tab" id="tab-7" onclick="getTab(7)">Scene</button>
+        </div>
+
+        <div class="panel" id="panel-0"> 
+
+            <fieldset class="sub-panel">
+                <legend class="p-title">Main</legend>
+
+                <div class="control-box" id="SD-block-0">
+                    <div class="ppt-title">Shader</div>
+                    <select class="selector-B" id="SD0" onchange="updateShader(0, value)">
+                        <option value="Flat">Flat</option>
+                        <option value="Gouraud">Gouraud</option>
+                        <option value="Phong">Phong</option>
+                    </select>
+                </div>
+                <br>
+                <div class="control-box" id="MD-block-0">
+                    <div class="ppt-title">Model</div>
+                    <select class="selector-B" id="MD0" onchange="updateModel(0, value)">
+                        <option value="Teapot">Teapot</option>
+                        <option value="Easter">Easter</option>
+                        <option value="Kangaroo">Kangaroo</option>
+                        <option value="Hide">Hide</option>
+                    </select>
+                </div>
+
+            </fieldset>
+            
+            <fieldset class="sub-panel-B">
+                <legend class="p-title-B">Transformation</legend>
+                
+                <div class="control-box-4" id="TL-block-0" style="grid-row: 2;grid-column: 1;">
+                    <div class="ppt-title">Translation</div>
+                    <select class="selector" id="TL0-SB" onchange="updateLocation(0, 'SB')">
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </select>
+                    <input type="range" class="range-bar" id="TL0-RB" min=-100 max=100 onchange="updateLocation(0, 'RB')">
+                    <input class="value-box" id="TL0-VB" onchange="updateLocation(0,'VB')">
+                </div>
+                
+                <div class="control-box-4" id="RT-block-0" style="grid-row: 2;grid-column: 2;">
+                    <div class="ppt-title">Rotation</div>
+                    <select class="selector" id="RT0-SB" onchange="updateRotation(0, 'SB')">
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </select>
+                    <input type="range" class="range-bar" id="RT0-RB" min=-540 max=540 onchange="updateRotation(0, 'RB')">
+                    <input class="value-box" id="RT0-VB" onchange="updateRotation(0, 'VB')">
+                </div>
+                
+                <div class="control-box-4" id="SC-block-0" style="grid-row: 3;grid-column: 1;">
+                    <div class="ppt-title">Scaling</div>
+                    <select class="selector" id="SC0-SB" onchange="updateScaling(0, 'SB')">
+                        <option value="all">all</option>
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </select>
+                    <input type="range" class="range-bar" id="SC0-RB" min=0.1 max=3 step=0.1 onchange="updateScaling(0, 'RB')">
+                    <input class="value-box" id="SC0-VB" onchange="updateScaling(0, 'VB')">
+                </div>
+                
+                <div class="control-box-4" id="SH-block-0" style="grid-row: 3;grid-column: 2;">
+                    <div class="ppt-title">Shearing</div>
+                    <div> <!-- Shear doesn't have dim --> </div>
+                    <input type="range" class="range-bar" id="SH0-RB" min=-180 max=180 onchange="updateShearing(0, 'RB')">
+                    <input class="value-box" id="SH0-VB" onchange="updateShearing(0, 'VB')">
+                </div>
+
+            </fieldset>
+            
+            <fieldset class="sub-panel" style="display: grid; grid-template-rows: 0% 20% 20% 20% 40%;">
+                <legend class="p-title">Texture</legend>
+ 
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Ka</div>
+                    <input type="range" class="range-bar-tx" id="KA0-RB" min=0 max=1 step=0.05 onchange="updateKa(0, 'RB')">
+                    <input type="text" class="value-box" id="KA0-VB" style="margin-top: 0;" onchange="updateKa(0, 'VB')">
+                </div>
+ 
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Kd</div>
+                    <input type="range" class="range-bar-tx" id="KD0-RB" min=0 max=1 step=0.05 onchange="updateKd(0, 'RB')">
+                    <input type="text" class="value-box" id="KD0-VB" style="margin-top: 0;" onchange="updateKd(0, 'VB')">
+                </div>
+
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Ks</div>
+                    <input type="range" class="range-bar-tx" id="KS0-RB" min=0 max=1 step=0.05 onchange="updateKs(0, 'RB')">
+                    <input type="text" class="value-box" id="KS0-VB" style="margin-top: 0;" onchange="updateKs(0, 'VB')">
+                </div>
+
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Shininess</div>
+                    <input type="range" class="range-bar-tx" style="margin-top: 7.5%;" id="SN0-RB" min=0 max=16 step=0.5 onchange="updateShininess(0, 'RB')">
+                    <input type="text" class="value-box" id="SN0-VB" style="margin-top: 25%; height: 30%;" onchange="updateShininess(0, 'VB')">
+                </div>
+            </fieldset>
+        </div>
+        
+        <div class="panel" id="panel-1"> 
+            <fieldset class="sub-panel">
+                <legend class="p-title">Main</legend>
+        
+                <div class="control-box" id="SD-block-1">
+                    <div class="ppt-title">Shader</div>
+                    <select class="selector-B" id="SD1" onchange="updateShader(1, value)">
+                        <option value="Flat">Flat</option>
+                        <option value="Gouraud">Gouraud</option>
+                        <option value="Phong">Phong</option>
+                    </select>
+                </div>
+                <br>
+                <div class="control-box" id="MD-block-1">
+                    <div class="ppt-title">Model</div>
+                    <select class="selector-B" id="MD1" onchange="updateModel(1, value)">
+                        <option value="Teapot">Teapot</option>
+                        <option value="Easter">Easter</option>
+                        <option value="Kangaroo">Kangaroo</option>
+                        <option value="Hide">Hide</option>
+                    </select>
+                </div>
+        
+            </fieldset>
+            
+            <fieldset class="sub-panel-B">
+                <legend class="p-title-B">Transformation</legend>
+                
+                <div class="control-box-4" id="TL-block-1" style="grid-row: 2;grid-column: 1;">
+                    <div class="ppt-title">Translation</div>
+                    <select class="selector" id="TL1-SB" onchange="updateLocation(1, 'SB')">
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </select>
+                    <input type="range" class="range-bar" id="TL1-RB" min=-100 max=100 onchange="updateLocation(1, 'RB')">
+                    <input class="value-box" id="TL1-VB" onchange="updateLocation(1,'VB')">
+                </div>
+                
+                <div class="control-box-4" id="RT-block-1" style="grid-row: 2;grid-column: 2;">
+                    <div class="ppt-title">Rotation</div>
+                    <select class="selector" id="RT1-SB" onchange="updateRotation(1, 'SB')">
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </select>
+                    <input type="range" class="range-bar" id="RT1-RB" min=-540 max=540 onchange="updateRotation(1, 'RB')">
+                    <input class="value-box" id="RT1-VB" onchange="updateRotation(1, 'VB')">
+                </div>
+                
+                <div class="control-box-4" id="SC-block-1" style="grid-row: 3;grid-column: 1;">
+                    <div class="ppt-title">Scaling</div>
+                    <select class="selector" id="SC1-SB" onchange="updateScaling(1, 'SB')">
+                        <option value="all">all</option>
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </select>
+                    <input type="range" class="range-bar" id="SC1-RB" min=0.1 max=3 step=0.1 onchange="updateScaling(1, 'RB')">
+                    <input class="value-box" id="SC1-VB" onchange="updateScaling(1, 'VB')">
+                </div>
+                
+                <div class="control-box-4" id="SH-block-1" style="grid-row: 3;grid-column: 2;">
+                    <div class="ppt-title">Shearing</div>
+                    <div> <!-- Shear doesn't have dim --> </div>
+                    <input type="range" class="range-bar" id="SH1-RB" min=-180 max=180 onchange="updateShearing(1, 'RB')">
+                    <input class="value-box" id="SH1-VB" onchange="updateShearing(1, 'VB')">
+                </div>
+        
+            </fieldset>
+            
+            <fieldset class="sub-panel" style="display: grid; grid-template-rows: 0% 20% 20% 20% 40%;">
+                <legend class="p-title">Texture</legend>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Ka</div>
+                    <input type="range" class="range-bar-tx" id="KA1-RB" min=0 max=1 step=0.05 onchange="updateKa(1, 'RB')">
+                    <input type="text" class="value-box" id="KA1-VB" style="margin-top: 0;" onchange="updateKa(1, 'VB')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Kd</div>
+                    <input type="range" class="range-bar-tx" id="KD1-RB" min=0 max=1 step=0.05 onchange="updateKd(1, 'RB')">
+                    <input type="text" class="value-box" id="KD1-VB" style="margin-top: 0;" onchange="updateKd(1, 'VB')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Ks</div>
+                    <input type="range" class="range-bar-tx" id="KS1-RB" min=0 max=1 step=0.05 onchange="updateKs(1, 'RB')">
+                    <input type="text" class="value-box" id="KS1-VB" style="margin-top: 0;" onchange="updateKs(1, 'VB')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Shininess</div>
+                    <input type="range" class="range-bar-tx" style="margin-top: 7.5%;" id="SN1-RB" min=0 max=16 step=0.5 onchange="updateShininess(1, 'RB')">
+                    <input type="text" class="value-box" id="SN1-VB" style="margin-top: 25%; height: 30%;" onchange="updateShininess(1, 'VB')">
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="panel" id="panel-2"> 
+
+            <fieldset class="sub-panel">
+                <legend class="p-title">Main</legend>
+        
+                <div class="control-box" id="SD-block-2">
+                    <div class="ppt-title">Shader</div>
+                    <select class="selector-B" id="SD2" onchange="updateShader(2, value)">
+                        <option value="Flat">Flat</option>
+                        <option value="Gouraud">Gouraud</option>
+                        <option value="Phong">Phong</option>
+                    </select>
+                </div>
+                <br>
+                <div class="control-box" id="MD-block-2">
+                    <div class="ppt-title">Model</div>
+                    <select class="selector-B" id="MD2" onchange="updateModel(2, value)">
+                        <option value="Teapot">Teapot</option>
+                        <option value="Easter">Easter</option>
+                        <option value="Kangaroo">Kangaroo</option>
+                        <option value="Hide">Hide</option>
+                    </select>
+                </div>
+        
+            </fieldset>
+            
+            <fieldset class="sub-panel-B">
+                <legend class="p-title-B">Transformation</legend>
+                
+                <div class="control-box-4" id="TL-block-2" style="grid-row: 2;grid-column: 1;">
+                    <div class="ppt-title">Translation</div>
+                    <select class="selector" id="TL2-SB" onchange="updateLocation(2, 'SB')">
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </select>
+                    <input type="range" class="range-bar" id="TL2-RB" min=-200 max=100 onchange="updateLocation(2, 'RB')">
+                    <input class="value-box" id="TL2-VB" onchange="updateLocation(2,'VB')">
+                </div>
+                
+                <div class="control-box-4" id="RT-block-2" style="grid-row: 2;grid-column: 2;">
+                    <div class="ppt-title">Rotation</div>
+                    <select class="selector" id="RT2-SB" onchange="updateRotation(2, 'SB')">
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </select>
+                    <input type="range" class="range-bar" id="RT2-RB" min=-540 max=540 onchange="updateRotation(2, 'RB')">
+                    <input class="value-box" id="RT2-VB" onchange="updateRotation(2, 'VB')">
+                </div>
+                
+                <div class="control-box-4" id="SC-block-2" style="grid-row: 3;grid-column: 1;">
+                    <div class="ppt-title">Scaling</div>
+                    <select class="selector" id="SC2-SB" onchange="updateScaling(2, 'SB')">
+                        <option value="all">all</option>
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </select>
+                    <input type="range" class="range-bar" id="SC2-RB" min=0.1 max=3 step=0.1 onchange="updateScaling(2, 'RB')">
+                    <input class="value-box" id="SC2-VB" onchange="updateScaling(2, 'VB')">
+                </div>
+                
+                <div class="control-box-4" id="SH-block-2" style="grid-row: 3;grid-column: 2;">
+                    <div class="ppt-title">Shearing</div>
+                    <div> <!-- Shear doesn't have dim --> </div>
+                    <input type="range" class="range-bar" id="SH2-RB" min=-180 max=180 onchange="updateShearing(2, 'RB')">
+                    <input class="value-box" id="SH2-VB" onchange="updateShearing(2, 'VB')">
+                </div>
+        
+            </fieldset>
+            
+            <fieldset class="sub-panel" style="display: grid; grid-template-rows: 0% 20% 20% 20% 40%;">
+                <legend class="p-title">Texture</legend>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Ka</div>
+                    <input type="range" class="range-bar-tx" id="KA2-RB" min=0 max=1 step=0.05 onchange="updateKa(2, 'RB')">
+                    <input type="text" class="value-box" id="KA2-VB" style="margin-top: 0;" onchange="updateKa(2, 'VB')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Kd</div>
+                    <input type="range" class="range-bar-tx" id="KD2-RB" min=0 max=1 step=0.05 onchange="updateKd(2, 'RB')">
+                    <input type="text" class="value-box" id="KD2-VB" style="margin-top: 0;" onchange="updateKd(2, 'VB')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Ks</div>
+                    <input type="range" class="range-bar-tx" id="KS2-RB" min=0 max=1 step=0.05 onchange="updateKs(2, 'RB')">
+                    <input type="text" class="value-box" id="KS2-VB" style="margin-top: 0;" onchange="updateKs(2, 'VB')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Shininess</div>
+                    <input type="range" class="range-bar-tx" style="margin-top: 7.5%;" id="SN2-RB" min=0 max=16 step=0.5 onchange="updateShininess(2, 'RB')">
+                    <input type="text" class="value-box" id="SN2-VB" style="margin-top: 25%; height: 30%;" onchange="updateShininess(2, 'VB')">
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="panel" id="panel-3">
+
+            <fieldset class="sub-panel" style="display: grid; grid-template-rows: 0% 25% 25% 25% 25%;">
+                <legend class="p-title">Light Color</legend>
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title" style="color: red;">R</div>
+                    <input type="range" class="range-bar-tx" id="R0-RB" min=1 max=16 step=0.5 onchange="updateColor(0, 'RB', 'R')">
+                    <input type="text" class="value-box" id="R0-VB" style="margin-top: 0;" onchange="updateColor(0, 'VB', 'R')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title" style="color: green;">G</div>
+                    <input type="range" class="range-bar-tx" id="G0-RB" min=1 max=16 step=0.5 onchange="updateColor(0, 'RB', 'G')">
+                    <input type="text" class="value-box" id="G0-VB" style="margin-top: 0;" onchange="updateColor(0, 'VB', 'G')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title" style="color:blue;">B</div>
+                    <input type="range" class="range-bar-tx" id="B0-RB" min=1 max=16 step=0.5 onchange="updateColor(0, 'RB', 'B')">
+                    <input type="text" class="value-box" id="B0-VB" style="margin-top: 0;" onchange="updateColor(0, 'VB', 'B')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">All</div>
+                    <input type="range" class="range-bar-tx" id="A0-RB" min=1 max=16 step=0.5 onchange="updateColor(0, 'RB', 'A')">
+                    <input type="text" class="value-box" id="A0-VB" style="margin-top: 0;" onchange="updateColor(0, 'VB', 'A')">
+                </div>
+            </fieldset>
+            
+            <fieldset class="sub-panel" style="display: grid; grid-template-rows: 1% 33% 33% 33%;">
+                <legend class="p-title">Light Position</legend>
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">X</div>
+                    <input type="range" class="range-bar-tx" id="X0-RB" min=-150 max=150 step=5 onchange="updateLightPosition(0, 'RB', 'x')">
+                    <input type="text" class="value-box" id="X0-VB" style="height: 40%;" onchange="updateLightPosition(0, 'VB', 'x')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Y</div>
+                    <input type="range" class="range-bar-tx" id="Y0-RB" min=-150 max=150 step=5 onchange="updateLightPosition(0, 'RB', 'y')">
+                    <input type="text" class="value-box" id="Y0-VB" style="height: 40%;" onchange="updateLightPosition(0, 'VB', 'y')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Z</div>
+                    <input type="range" class="range-bar-tx" id="Z0-RB" min=-150 max=150 step=5 onchange="updateLightPosition(0, 'RB', 'z')">
+                    <input type="text" class="value-box" id="Z0-VB" style="height: 40%;" onchange="updateLightPosition(0, 'VB', 'z')">
+                </div>
+            </fieldset>
+            
+            <fieldset class="sub-panel-B" style="grid-column: 3/5; grid-template-columns: 30% 70%;">
+                <legend class="p-title">Color Selection</legend>
+
+                <div style="grid-row: 2/4;">
+                    <input type="color" style="height: 80%; width: 80%;" id="CL0" onchange="updateByColorPad(0)">                    
+                </div>
+                <div style="grid-row: 2/4; width: 100%; height: 80%; display: grid; grid-template-columns: repeat(9,1fr); grid-template-rows: repeat(3, 1fr);">
+                    <button id="CB0-0" style="background-color: #ffffff;" onclick="updateByColorButton(0,0)"></button>
+                    <button id="CB0-1" style="background-color: #ffff80;" onclick="updateByColorButton(0,1)"></button>  
+                    <button id="CB0-2" style="background-color: #ffff00;" onclick="updateByColorButton(0,2)"></button>  
+                    <button id="CB0-3" style="background-color: #ff80ff;" onclick="updateByColorButton(0,3)"></button>  
+                    <button id="CB0-4" style="background-color: #ff8080;" onclick="updateByColorButton(0,4)"></button>  
+                    <button id="CB0-5" style="background-color: #ff8000;" onclick="updateByColorButton(0,5)"></button>  
+                    <button id="CB0-6" style="background-color: #ff00ff;" onclick="updateByColorButton(0,6)"></button>  
+                    <button id="CB0-7" style="background-color: #ff0080;" onclick="updateByColorButton(0,7)"></button>  
+                    <button id="CB0-8" style="background-color: #ff0000;" onclick="updateByColorButton(0,8)"></button>  
+                    <button id="CB0-9" style="background-color: #80ffff;" onclick="updateByColorButton(0,9)"></button>  
+                    <button id="CB0-10" style="background-color: #80ff80;" onclick="updateByColorButton(0,10)"></button>
+                    <button id="CB0-11" style="background-color: #80ff00;" onclick="updateByColorButton(0,11)"></button>
+                    <button id="CB0-12" style="background-color: #8080ff;" onclick="updateByColorButton(0,12)"></button>
+                    <button id="CB0-13" style="background-color: #808080;" onclick="updateByColorButton(0,13)"></button>
+                    <button id="CB0-14" style="background-color: #808000;" onclick="updateByColorButton(0,14)"></button>
+                    <button id="CB0-15" style="background-color: #8000ff;" onclick="updateByColorButton(0,15)"></button>
+                    <button id="CB0-16" style="background-color: #800080;" onclick="updateByColorButton(0,16)"></button>
+                    <button id="CB0-17" style="background-color: #800000;" onclick="updateByColorButton(0,17)"></button>
+                    <button id="CB0-18" style="background-color: #00ffff;" onclick="updateByColorButton(0,18)"></button>
+                    <button id="CB0-19" style="background-color: #00ff80;" onclick="updateByColorButton(0,19)"></button>
+                    <button id="CB0-20" style="background-color: #00ff00;" onclick="updateByColorButton(0,20)"></button>
+                    <button id="CB0-21" style="background-color: #0080ff;" onclick="updateByColorButton(0,21)"></button>
+                    <button id="CB0-22" style="background-color: #008080;" onclick="updateByColorButton(0,22)"></button>
+                    <button id="CB0-23" style="background-color: #008000;" onclick="updateByColorButton(0,23)"></button>
+                    <button id="CB0-24" style="background-color: #0000ff;" onclick="updateByColorButton(0,24)"></button>
+                    <button id="CB0-25" style="background-color: #000080;" onclick="updateByColorButton(0,25)"></button>
+                    <button id="CB0-26" style="background-color: #000000;" onclick="updateByColorButton(0,26)"></button>                
+                </div>
+
+            </fieldset>
+            
+        </div>
+
+        <div class="panel" id="panel-4">
+
+            <fieldset class="sub-panel" style="display: grid; grid-template-rows: 0% 25% 25% 25% 25%;">
+                <legend class="p-title">Light Color</legend>
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title" style="color: red;">R</div>
+                    <input type="range" class="range-bar-tx" id="R1-RB" min=1 max=16 step=0.5 onchange="updateColor(1, 'RB', 'R')">
+                    <input type="text" class="value-box" id="R1-VB" style="margin-top: 0;" onchange="updateColor(1, 'VB', 'R')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title" style="color: green;">G</div>
+                    <input type="range" class="range-bar-tx" id="G1-RB" min=1 max=16 step=0.5 onchange="updateColor(1, 'RB', 'G')">
+                    <input type="text" class="value-box" id="G1-VB" style="margin-top: 0;" onchange="updateColor(1, 'VB', 'G')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title" style="color:blue;">B</div>
+                    <input type="range" class="range-bar-tx" id="B1-RB" min=1 max=16 step=0.5 onchange="updateColor(1, 'RB', 'B')">
+                    <input type="text" class="value-box" id="B1-VB" style="margin-top: 0;" onchange="updateColor(1, 'VB', 'B')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">All</div>
+                    <input type="range" class="range-bar-tx" id="A1-RB" min=1 max=16 step=0.5 onchange="updateColor(1, 'RB', 'A')">
+                    <input type="text" class="value-box" id="A1-VB" style="margin-top: 0;" onchange="updateColor(1, 'VB', 'A')">
+                </div>
+            </fieldset>
+            
+            <fieldset class="sub-panel" style="display: grid; grid-template-rows: 1% 33% 33% 33%;">
+                <legend class="p-title">Light Position</legend>
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">X</div>
+                    <input type="range" class="range-bar-tx" id="X1-RB" min=-150 max=150 step=5 onchange="updateLightPosition(1, 'RB', 'x')">
+                    <input type="text" class="value-box" id="X1-VB" style="height: 40%;" onchange="updateLightPosition(1, 'VB', 'x')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Y</div>
+                    <input type="range" class="range-bar-tx" id="Y1-RB" min=-150 max=150 step=5 onchange="updateLightPosition(1, 'RB', 'y')">
+                    <input type="text" class="value-box" id="Y1-VB" style="height: 40%;" onchange="updateLightPosition(1, 'VB', 'y')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Z</div>
+                    <input type="range" class="range-bar-tx" id="Z1-RB" min=-150 max=150 step=5 onchange="updateLightPosition(1, 'RB', 'z')">
+                    <input type="text" class="value-box" id="Z1-VB" style="height: 40%;" onchange="updateLightPosition(1, 'VB', 'z')">
+                </div>
+            </fieldset>
+            
+            <fieldset class="sub-panel-B" style="grid-column: 3/5; grid-template-columns: 30% 70%;">
+                <legend class="p-title">Color Selection</legend>
+        
+                <div style="grid-row: 2/4;">
+                    <input type="color" style="height: 80%; width: 80%;" id="CL1" onchange="updateByColorPad(1)">                    
+                </div>
+                <div style="grid-row: 2/4; width: 100%; height: 80%; display: grid; grid-template-columns: repeat(9,1fr); grid-template-rows: repeat(3, 1fr);">
+                    <button id="CB1-0" style="background-color: #ffffff;" onclick="updateByColorButton(1,0)"></button>
+                    <button id="CB1-1" style="background-color: #ffff80;" onclick="updateByColorButton(1,1)"></button>  
+                    <button id="CB1-2" style="background-color: #ffff00;" onclick="updateByColorButton(1,2)"></button>  
+                    <button id="CB1-3" style="background-color: #ff80ff;" onclick="updateByColorButton(1,3)"></button>  
+                    <button id="CB1-4" style="background-color: #ff8080;" onclick="updateByColorButton(1,4)"></button>  
+                    <button id="CB1-5" style="background-color: #ff8000;" onclick="updateByColorButton(1,5)"></button>  
+                    <button id="CB1-6" style="background-color: #ff00ff;" onclick="updateByColorButton(1,6)"></button>  
+                    <button id="CB1-7" style="background-color: #ff0080;" onclick="updateByColorButton(1,7)"></button>  
+                    <button id="CB1-8" style="background-color: #ff0000;" onclick="updateByColorButton(1,8)"></button>  
+                    <button id="CB1-9" style="background-color: #80ffff;" onclick="updateByColorButton(1,9)"></button>  
+                    <button id="CB1-10" style="background-color: #80ff80;" onclick="updateByColorButton(1,10)"></button>
+                    <button id="CB1-11" style="background-color: #80ff00;" onclick="updateByColorButton(1,11)"></button>
+                    <button id="CB1-12" style="background-color: #8080ff;" onclick="updateByColorButton(1,12)"></button>
+                    <button id="CB1-13" style="background-color: #808080;" onclick="updateByColorButton(1,13)"></button>
+                    <button id="CB1-14" style="background-color: #808000;" onclick="updateByColorButton(1,14)"></button>
+                    <button id="CB1-15" style="background-color: #8000ff;" onclick="updateByColorButton(1,15)"></button>
+                    <button id="CB1-16" style="background-color: #800080;" onclick="updateByColorButton(1,16)"></button>
+                    <button id="CB1-17" style="background-color: #800000;" onclick="updateByColorButton(1,17)"></button>
+                    <button id="CB1-18" style="background-color: #00ffff;" onclick="updateByColorButton(1,18)"></button>
+                    <button id="CB1-19" style="background-color: #00ff80;" onclick="updateByColorButton(1,19)"></button>
+                    <button id="CB1-20" style="background-color: #00ff00;" onclick="updateByColorButton(1,20)"></button>
+                    <button id="CB1-21" style="background-color: #0080ff;" onclick="updateByColorButton(1,21)"></button>
+                    <button id="CB1-22" style="background-color: #008080;" onclick="updateByColorButton(1,22)"></button>
+                    <button id="CB1-23" style="background-color: #008000;" onclick="updateByColorButton(1,23)"></button>
+                    <button id="CB1-24" style="background-color: #0000ff;" onclick="updateByColorButton(1,24)"></button>
+                    <button id="CB1-25" style="background-color: #000080;" onclick="updateByColorButton(1,25)"></button>
+                    <button id="CB1-26" style="background-color: #000000;" onclick="updateByColorButton(1,26)"></button>                
+                </div>
+        
+            </fieldset>
+            
+        </div>
+
+        <div class="panel" id="panel-5">
+
+            <fieldset class="sub-panel" style="display: grid; grid-template-rows: 0% 25% 25% 25% 25%;">
+                <legend class="p-title">Light Color</legend>
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title" style="color: red;">R</div>
+                    <input type="range" class="range-bar-tx" id="R2-RB" min=1 max=16 step=0.5 onchange="updateColor(2, 'RB', 'R')">
+                    <input type="text" class="value-box" id="R2-VB" style="margin-top: 0;" onchange="updateColor(2, 'VB', 'R')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title" style="color: green;">G</div>
+                    <input type="range" class="range-bar-tx" id="G2-RB" min=1 max=16 step=0.5 onchange="updateColor(2, 'RB', 'G')">
+                    <input type="text" class="value-box" id="G2-VB" style="margin-top: 0;" onchange="updateColor(2, 'VB', 'G')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title" style="color:blue;">B</div>
+                    <input type="range" class="range-bar-tx" id="B2-RB" min=1 max=16 step=0.5 onchange="updateColor(2, 'RB', 'B')">
+                    <input type="text" class="value-box" id="B2-VB" style="margin-top: 0;" onchange="updateColor(2, 'VB', 'B')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">All</div>
+                    <input type="range" class="range-bar-tx" id="A2-RB" min=1 max=16 step=0.5 onchange="updateColor(2, 'RB', 'A')">
+                    <input type="text" class="value-box" id="A2-VB" style="margin-top: 0;" onchange="updateColor(2, 'VB', 'A')">
+                </div>
+            </fieldset>
+            
+            <fieldset class="sub-panel" style="display: grid; grid-template-rows: 1% 33% 33% 33%;">
+                <legend class="p-title">Light Position</legend>
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">X</div>
+                    <input type="range" class="range-bar-tx" id="X2-RB" min=-150 max=150 step=5 onchange="updateLightPosition(2, 'RB', 'x')">
+                    <input type="text" class="value-box" id="X2-VB" style="height: 40%;" onchange="updateLightPosition(2, 'VB', 'x')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Y</div>
+                    <input type="range" class="range-bar-tx" id="Y2-RB" min=-150 max=150 step=5 onchange="updateLightPosition(2, 'RB', 'y')">
+                    <input type="text" class="value-box" id="Y2-VB" style="height: 40%;" onchange="updateLightPosition(2, 'VB', 'y')">
+                </div>
+        
+                <div class="control-box" style="display: grid; grid-template-columns: 10% 70% 30%;">
+                    <div class="ppt-title">Z</div>
+                    <input type="range" class="range-bar-tx" id="Z2-RB" min=-150 max=150 step=5 onchange="updateLightPosition(2, 'RB', 'z')">
+                    <input type="text" class="value-box" id="Z2-VB" style="height: 40%;" onchange="updateLightPosition(2, 'VB', 'z')">
+                </div>
+            </fieldset>
+            
+            <fieldset class="sub-panel-B" style="grid-column: 3/5; grid-template-columns: 30% 70%;">
+                <legend class="p-title">Color Selection</legend>
+        
+                <div style="grid-row: 2/4;">
+                    <input type="color" style="height: 80%; width: 80%;" id="CL2" onchange="updateByColorPad(2)">                    
+                </div>
+                <div style="grid-row: 2/4; width: 100%; height: 80%; display: grid; grid-template-columns: repeat(9,1fr); grid-template-rows: repeat(3, 1fr);">
+                    <button id="CB2-0" style="background-color: #ffffff;" onclick="updateByColorButton(2,0)"></button>
+                    <button id="CB2-1" style="background-color: #ffff80;" onclick="updateByColorButton(2,1)"></button>  
+                    <button id="CB2-2" style="background-color: #ffff00;" onclick="updateByColorButton(2,2)"></button>  
+                    <button id="CB2-3" style="background-color: #ff80ff;" onclick="updateByColorButton(2,3)"></button>  
+                    <button id="CB2-4" style="background-color: #ff8080;" onclick="updateByColorButton(2,4)"></button>  
+                    <button id="CB2-5" style="background-color: #ff8000;" onclick="updateByColorButton(2,5)"></button>  
+                    <button id="CB2-6" style="background-color: #ff00ff;" onclick="updateByColorButton(2,6)"></button>  
+                    <button id="CB2-7" style="background-color: #ff0080;" onclick="updateByColorButton(2,7)"></button>  
+                    <button id="CB2-8" style="background-color: #ff0000;" onclick="updateByColorButton(2,8)"></button>  
+                    <button id="CB2-9" style="background-color: #80ffff;" onclick="updateByColorButton(2,9)"></button>  
+                    <button id="CB2-10" style="background-color: #80ff80;" onclick="updateByColorButton(2,10)"></button>
+                    <button id="CB2-11" style="background-color: #80ff00;" onclick="updateByColorButton(2,11)"></button>
+                    <button id="CB2-12" style="background-color: #8080ff;" onclick="updateByColorButton(2,12)"></button>
+                    <button id="CB2-13" style="background-color: #808080;" onclick="updateByColorButton(2,13)"></button>
+                    <button id="CB2-14" style="background-color: #808000;" onclick="updateByColorButton(2,14)"></button>
+                    <button id="CB2-15" style="background-color: #8000ff;" onclick="updateByColorButton(2,15)"></button>
+                    <button id="CB2-16" style="background-color: #800080;" onclick="updateByColorButton(2,16)"></button>
+                    <button id="CB2-17" style="background-color: #800000;" onclick="updateByColorButton(2,17)"></button>
+                    <button id="CB2-18" style="background-color: #00ffff;" onclick="updateByColorButton(2,18)"></button>
+                    <button id="CB2-19" style="background-color: #00ff80;" onclick="updateByColorButton(2,19)"></button>
+                    <button id="CB2-20" style="background-color: #00ff00;" onclick="updateByColorButton(2,20)"></button>
+                    <button id="CB2-21" style="background-color: #0080ff;" onclick="updateByColorButton(2,21)"></button>
+                    <button id="CB2-22" style="background-color: #008080;" onclick="updateByColorButton(2,22)"></button>
+                    <button id="CB2-23" style="background-color: #008000;" onclick="updateByColorButton(2,23)"></button>
+                    <button id="CB2-24" style="background-color: #0000ff;" onclick="updateByColorButton(2,24)"></button>
+                    <button id="CB2-25" style="background-color: #000080;" onclick="updateByColorButton(2,25)"></button>
+                    <button id="CB2-26" style="background-color: #000000;" onclick="updateByColorButton(2,26)"></button>                
+                </div>
+        
+            </fieldset>
+            
+        </div>
+
+        <div class="panel" id="panel-6" style="grid-template-columns: 1fr;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; width: 100%;">
+                <fieldset class="sub-panel" style="display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: 0% 100%;">
+                    <legend class="p-title">Item</legend>
+                    <div class="btn-box">
+                        <button class="feat" id="AR0" onclick="autoRotateSwitch(0)">Auto Rotate</button>
+                        <button class="feat" id="CR0" onclick="crazyRotateSwitch(0)">Crazy Rotate</button>
+                        <button class="feat" id="V0" onclick="vibingSwitch(0)">Vibing</button>
+                    </div>
+                    <div class="btn-box">
+                        <button class="feat" id="AR1" onclick="autoRotateSwitch(1)">Auto Rotate</button>
+                        <button class="feat" id="CR1" onclick="crazyRotateSwitch(1)">Crazy Rotate</button>
+                        <button class="feat" id="V1" onclick="vibingSwitch(1)">Vibing</button>
+                    </div>
+                    <div class="btn-box">
+                        <button class="feat" id="AR2" onclick="autoRotateSwitch(2)">Auto Rotate</button>
+                        <button class="feat" id="CR2" onclick="crazyRotateSwitch(2)">Crazy Rotate</button>
+                        <button class="feat" id="V2" onclick="vibingSwitch(2)">Vibing</button>
+                    </div>
+                </fieldset>
+                
+                <fieldset class="sub-panel" style="display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: 0% 100%;">
+                    <legend class="p-title">Light</legend>
+                    <div class="btn-box">
+                        <button class="feat" id="FL0" onclick="flashingSwitch(0)">Flashing</button>
+                        <button class="feat" id="MV0" onclick="movingSwitch(0)">Moving</button>
+                        <button class="feat" id="CH0" onclick="changingSwitch(0)">Changing</button>
+                    </div>
+                    <div class="btn-box">
+                        <button class="feat" id="FL1" onclick="flashingSwitch(1)">Flashing</button>
+                        <button class="feat" id="MV1" onclick="movingSwitch(1)">Moving</button>
+                        <button class="feat" id="CH1" onclick="changingSwitch(1)">Changing</button>
+                    </div>
+                    <div class="btn-box">
+                        <button class="feat" id="FL2" onclick="flashingSwitch(2)">Flashing</button>
+                        <button class="feat" id="MV2" onclick="movingSwitch(2)">Moving</button>
+                        <button class="feat" id="CH2" onclick="changingSwitch(2)">Changing</button>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="panel" id="panel-7" style="grid-template-columns: 1fr;">
+            <div style="display:grid; grid-template-columns: repeat(6, 1fr);">
+                <input type="image" src="./image/disco.jpg" class="img-btn" width="100%" height="100%" onclick="DiscoMode()">
+                <input type="image" src="./image/concert.jpg" class="img-btn" width="100%" height="100%" onclick="ConcertMode()">
+                <input type="image" src="./image/angry.jpg" class="img-btn" width="100%" height="100%" onclick="AngryMode()">
+                <input type="image" src="./image/Rushmore.jpg" class="img-btn" width="100%" height="100%" onclick="RushmoreMode()">
+                <input type="image" src="./image/battle.jpg" class="img-btn" width="100%" height="100%" onclick="BattleMode()">
+                <input type="image" src="./image/lake.jpg" class="img-btn" width="100%" height="100%" onclick="LakeMode()">
+            </div>
+        </div>
+    </div>
   </body>
 </html>
